@@ -1,0 +1,15 @@
+# Aspose.3D Wavefront OBJ Exporter
+# Copyright 2004-2023 Aspose Pty Ltd.
+# File created: 03/26/2023 17:27:09
+
+newmtl Material.001
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+	map_Kd models/chair/chairColor.png
+	map_Bump models/chair/chairNormal.png
+	map_Ks models/chair/chairRoughness.png

@@ -1,0 +1,26 @@
+﻿  glad.c
+  Source.cpp
+  wprowadzenie.cpp
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwSwapBuffers
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwSetFramebufferSizeCallback
+wprowadzenie.obj : error LNK2001: unresolved external symbol _aiGetMaterialTextureCount
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwGetTime
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwGetKey
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwTerminate
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwPollEvents
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwInit
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwSetWindowShouldClose
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwSetScrollCallback
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwCreateWindow
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwWindowHint
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwSetInputMode
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwMakeContextCurrent
+wprowadzenie.obj : error LNK2001: unresolved external symbol "public: char const * __thiscall Assimp::Importer::GetErrorString(void)const " (?GetErrorString@Importer@Assimp@@QBEPBDXZ)
+wprowadzenie.obj : error LNK2001: unresolved external symbol "public: struct aiScene const * __thiscall Assimp::Importer::ReadFile(char const *,unsigned int)" (?ReadFile@Importer@Assimp@@QAEPBUaiScene@@PBDI@Z)
+wprowadzenie.obj : error LNK2001: unresolved external symbol "public: __thiscall Assimp::Importer::~Importer(void)" (??1Importer@Assimp@@QAE@XZ)
+wprowadzenie.obj : error LNK2001: unresolved external symbol "public: __thiscall Assimp::Importer::Importer(void)" (??0Importer@Assimp@@QAE@XZ)
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwGetProcAddress
+wprowadzenie.obj : error LNK2001: unresolved external symbol _aiGetMaterialTexture
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwSetCursorPosCallback
+wprowadzenie.obj : error LNK2001: unresolved external symbol _glfwWindowShouldClose
+C:\Users\Ethan\Documents\Visual Studio 2017\Projects\graphics_window\Release\graphics_window.exe : fatal error LNK1120: 22 unresolved externals
