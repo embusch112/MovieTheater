@@ -86,6 +86,7 @@ float vertices[] = {
 glm::vec3 pointLightPositions[] = { glm::vec3(0.3f,1.42f,0) };
 
 void drawChairs(Shader shader, glm::mat4 model, Model object);
+void drawCarpet(Shader shader, glm::mat4 model, Model object);
 
 int main()
 {
@@ -143,6 +144,7 @@ int main()
 	// load models
 	// -----------
 	Model chair("models/chair/theaterChair.obj");
+	Model carpet("models/carpet/carpet.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -248,7 +250,7 @@ int main()
 		//chair.Draw(lightingShader);
 
 		drawChairs(lightingShader, model, chair);
-
+		drawCarpet(lightingShader, model, carpet);
 	
 
 
@@ -291,21 +293,34 @@ void drawChairs(Shader shader, glm::mat4 model, Model object) {
 	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));	// it's a bit too big for our scene, so scale it down
 	shader.setMat4("model", model);
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 9; i++) {
 		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
 		shader.setMat4("model", model);
 		object.Draw(shader);
 	}
 
-	model = glm::translate(model, glm::vec3(1.80f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+
+}
+
+void drawCarpet(Shader shader, glm::mat4 model, Model object) {
+	shader.use();
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.003f));	// it's a bit too big for our scene, so scale it down
 	shader.setMat4("model", model);
 
+	object.Draw(shader);
+
+	model = glm::translate(model, glm::vec3(X, Y, Z));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	//draws carpets along the length of the first row of chairs
+
 	for (int i = 0; i < 5; i++) {
-		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
 		shader.setMat4("model", model);
 		object.Draw(shader);
 	}
-
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -327,7 +342,7 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-		X = X + 0.01f;
+		X = X + 1.0f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
@@ -335,7 +350,7 @@ void processInput(GLFWwindow *window)
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
-		Y = Y + 0.01f;
+		Y = Y + 1.0f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
@@ -343,7 +358,7 @@ void processInput(GLFWwindow *window)
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-		Z = Z + 0.01f;
+		Z = Z + 1.0f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
