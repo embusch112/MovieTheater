@@ -15,6 +15,7 @@ float X = 0.0f;
 float Y = 0.0f;
 float Z = 0.0f;
 
+float rotater = 0.0f;
 bool render[] = { false,false,false };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -87,6 +88,7 @@ glm::vec3 pointLightPositions[] = { glm::vec3(0.3f,1.42f,0) };
 
 void drawChairs(Shader shader, glm::mat4 model, Model object);
 void drawCarpet(Shader shader, glm::mat4 model, Model object);
+void drawLights(Shader shader, glm::mat4 model, Model object);
 
 int main()
 {
@@ -145,6 +147,7 @@ int main()
 	// -----------
 	Model chair("models/chair/theaterChair.obj");
 	Model carpet("models/carpet/carpet.obj");
+	Model light("models/light/light.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -251,7 +254,7 @@ int main()
 
 		drawChairs(lightingShader, model, chair);
 		drawCarpet(lightingShader, model, carpet);
-	
+		drawLights(lightingShader, model, light);
 
 
 		// also draw the lamp object
@@ -310,17 +313,32 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 
 	object.Draw(shader);
 
-	model = glm::translate(model, glm::vec3(X, Y, Z));
-	shader.setMat4("model", model);
-	object.Draw(shader);
 
 	//draws carpets along the length of the first row of chairs
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 6; i++) {
 		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
 		shader.setMat4("model", model);
 		object.Draw(shader);
 	}
+}
+
+
+void drawLights(Shader shader, glm::mat4 model, Model object) {
+	shader.use();
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+	model = glm::translate(model, glm::vec3(0.0f, 14.62f, 0.0f));
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	
+
+	for (int i = 0; i < 4; i++) {
+		model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -342,7 +360,7 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-		X = X + 1.0f;
+		X = X + 0.01f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
@@ -350,7 +368,7 @@ void processInput(GLFWwindow *window)
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
-		Y = Y + 1.0f;
+		Y = Y + 0.01f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
@@ -358,12 +376,15 @@ void processInput(GLFWwindow *window)
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-		Z = Z + 1.0f;
+		Z = Z + 0.01f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
 		Z = Z - 0.01f;
 		printLoc();
+	}
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+		rotater = rotater + 0.5f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
 		render[0] = true;

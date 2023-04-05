@@ -1,0 +1,11 @@
+Model Information:
+* title:	Curve Panel Spot Light
+* source:	https://sketchfab.com/3d-models/curve-panel-spot-light-ef8021cc745a42b2a19b4a928b32cb4d
+* author:	Photoant77 (https://sketchfab.com/photoant77)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Curve Panel Spot Light" (https://sketchfab.com/3d-models/curve-panel-spot-light-ef8021cc745a42b2a19b4a928b32cb4d) by Photoant77 (https://sketchfab.com/photoant77) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
