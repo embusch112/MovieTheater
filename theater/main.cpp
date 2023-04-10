@@ -10,12 +10,13 @@
 #include <learnopengl/model.h>
 
 #include <iostream>
+#include <vector>
 
 float X = 0.0f;
 float Y = 0.0f;
 float Z = 0.0f;
 
-bool render[] = { false,false,false };
+bool render[] = { true,false,false };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -88,6 +89,9 @@ glm::vec3 pointLightPositions[] = { glm::vec3(0.3f,1.42f,0) };
 void drawChairs(Shader shader, glm::mat4 model, Model object);
 void drawCarpet(Shader shader, glm::mat4 model, Model object);
 
+void drawStairs(Shader shader, glm::mat4 model, Model object);
+void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects);
+
 int main()
 {
 	// glfw: initialize and configure
@@ -145,12 +149,18 @@ int main()
 	// -----------
 	Model chair("models/chair/theaterChair.obj");
 	Model carpet("models/carpet/carpet.obj");
+	Model railing("models/railing/metalRailing.obj");
+	//Model handRail("models/railing/handrail.obj");
+	//Model handRail_Mirror("models/railing/handrail_mirror.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// render loop
 	// -----------
+
+	//vector of objects for our misc function
+	vector<Model> objects = { railing};
 	while (!glfwWindowShouldClose(window))
 	{
 		// per-frame time logic
@@ -251,8 +261,7 @@ int main()
 
 		drawChairs(lightingShader, model, chair);
 		drawCarpet(lightingShader, model, carpet);
-	
-
+		drawMisc(lightingShader, model, objects);
 
 		// also draw the lamp object
 		//lightCube.use();
@@ -290,15 +299,74 @@ void drawChairs(Shader shader, glm::mat4 model, Model object) {
 	shader.use();
 	// render the loaded model
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));	// it's a bit too big for our scene, so scale it down
-	shader.setMat4("model", model);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
 
-	for (int i = 0; i < 9; i++) {
-		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+	//first layer
+	for (int i = 0; i < 10; i++) {
+		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f));
 		shader.setMat4("model", model);
 		object.Draw(shader);
 	}
 
+	//reset and draw second row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));	
+	model = glm::translate(model, glm::vec3(0.0f, 0.35f, -0.80f)); 
+	for (int i = 0; i < 10; i++) {
+		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//third row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(0.0f, 0.70f, -1.60f));
+	for (int i = 0; i < 10; i++) {
+		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//4th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(0.0f, 1.05f, -2.40f));
+	for (int i = 0; i < 10; i++) {
+		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//5th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(0.0f, 1.40f, -3.20f));
+	for (int i = 0; i < 10; i++) {
+		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//6th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(0.0f, 1.75f, -4.00f));
+	for (int i = 0; i < 10; i++) {
+		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//7th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(0.0f, 2.10f, -4.80f));
+	for (int i = 0; i < 10; i++) {
+		model = glm::translate(model, glm::vec3(0.80f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
 
 }
 
@@ -307,20 +375,141 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 	model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.003f));	// it's a bit too big for our scene, so scale it down
 	shader.setMat4("model", model);
-
 	object.Draw(shader);
 
-	model = glm::translate(model, glm::vec3(X, Y, Z));
-	shader.setMat4("model", model);
-	object.Draw(shader);
 
 	//draws carpets along the length of the first row of chairs
-
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 6; i++) {
 		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
 		shader.setMat4("model", model);
 		object.Draw(shader);
 	}
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0045f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 0.001, 181.0f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+
+	//draws carpets along the length of the first row of chairs
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//2nd row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 40.68f, -187.0f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//3rd row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 81.14f, -374.0f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//4th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 121.6f, -561.0f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+	//5th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 162.06f, -748.0f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//6th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 202.52f, -935.0f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//7th row
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 242.98f, -1122.0f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+	//top floor
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.003f));	// it's a bit too big for our scene, so scale it down
+	model = glm::translate(model, glm::vec3(0.0f, 242.98f, -732.0f));
+	//model = glm::translate(model, glm::vec3(X, Y, Z));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+	for (int i = 0; i < 6; i++) {
+		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+}
+
+
+void drawStairs(Shader shader, glm::mat4 model, Model object) {
+
+}
+
+void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
+	//draw handrail up top
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.0038f, 0.003f, 0.003f));
+	model = glm::translate(model, glm::vec3(406, 243.0f, -616.0f));
+	shader.setMat4("model", model);
+	objects[0].Draw(shader);
+
+	////handrail
+	//model = glm::mat4(1.0f);
+	////model = glm::scale(model, glm::vec3(0.0038f, 0.003f, 0.003f));
+	////model = glm::translate(model, glm::vec3(406, 243.0f, -616.0f));
+	//shader.setMat4("model", model);
+	//objects[1].Draw(shader);
+
+	////handrail Mirrored
+	//model = glm::mat4(1.0f);
+	////model = glm::scale(model, glm::vec3(0.0038f, 0.003f, 0.003f));
+	//model = glm::translate(model, glm::vec3(X, Y, Z));
+	//shader.setMat4("model", model);
+	//objects[2].Draw(shader);
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -342,11 +531,11 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-		X = X + 1.0f;
+		X = X + 0.01f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
-		X = X - 0.01f;
+		X = X - 1.0f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
@@ -354,7 +543,7 @@ void processInput(GLFWwindow *window)
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
-		Y = Y - 0.01f;
+		Y = Y - 1.0f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
@@ -362,7 +551,7 @@ void processInput(GLFWwindow *window)
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
-		Z = Z - 0.01f;
+		Z = Z - 1.0f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
