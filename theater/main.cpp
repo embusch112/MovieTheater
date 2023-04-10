@@ -88,7 +88,7 @@ glm::vec3 pointLightPositions[] = { glm::vec3(0.3f,1.42f,0) };
 
 void drawChairs(Shader shader, glm::mat4 model, Model object);
 void drawCarpet(Shader shader, glm::mat4 model, Model object);
-
+void drawLights(Shader shader, glm::mat4 model, Model object);
 void drawStairs(Shader shader, glm::mat4 model, Model object);
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects);
 
@@ -150,6 +150,7 @@ int main()
 	Model chair("models/chair/theaterChair.obj");
 	Model carpet("models/carpet/carpet.obj");
 	Model railing("models/railing/metalRailing.obj");
+	Model light("models/light/light.obj");
 	//Model handRail("models/railing/handrail.obj");
 	//Model handRail_Mirror("models/railing/handrail_mirror.obj");
 
@@ -262,6 +263,7 @@ int main()
 		drawChairs(lightingShader, model, chair);
 		drawCarpet(lightingShader, model, carpet);
 		drawMisc(lightingShader, model, objects);
+		drawLights(lightingShader, model, light);
 
 		// also draw the lamp object
 		//lightCube.use();
@@ -484,6 +486,22 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 	}
 }
 
+void drawLights(Shader shader, glm::mat4 model, Model object) {
+	shader.use();
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+	model = glm::translate(model, glm::vec3(0.0f, 14.62f, 0.0f));
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+
+	for (int i = 0; i < 4; i++) {
+		model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+		shader.setMat4("model", model);
+		object.Draw(shader);
+	}
+
+
+}
 
 void drawStairs(Shader shader, glm::mat4 model, Model object) {
 
