@@ -89,7 +89,7 @@ glm::vec3 pointLightPositions[] = { glm::vec3(0.3f,1.42f,0) };
 void drawChairs(Shader shader, glm::mat4 model, Model object);
 void drawCarpet(Shader shader, glm::mat4 model, Model object);
 void drawLights(Shader shader, glm::mat4 model, Model object);
-void drawStairs(Shader shader, glm::mat4 model, Model object);
+void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects);
 
 int main()
@@ -149,6 +149,7 @@ int main()
 	// -----------
 	Model chair("models/chair/theaterChair.obj");
 	Model carpet("models/carpet/carpet.obj");
+	Model stairNose("models/stairNose/stairNose.obj");
 	Model railing("models/railing/metalRailing.obj");
 	Model light("models/light/light.obj");
 	//Model handRail("models/railing/handrail.obj");
@@ -161,7 +162,8 @@ int main()
 	// -----------
 
 	//vector of objects for our misc function
-	vector<Model> objects = { railing};
+	vector<Model> miscObjects = {railing};
+	vector<Model> stairObjects = { carpet,stairNose };
 	while (!glfwWindowShouldClose(window))
 	{
 		// per-frame time logic
@@ -262,7 +264,8 @@ int main()
 
 		drawChairs(lightingShader, model, chair);
 		drawCarpet(lightingShader, model, carpet);
-		drawMisc(lightingShader, model, objects);
+		drawStairs(lightingShader, model, stairObjects);
+		drawMisc(lightingShader, model, miscObjects);
 		drawLights(lightingShader, model, light);
 
 		// also draw the lamp object
@@ -503,14 +506,28 @@ void drawLights(Shader shader, glm::mat4 model, Model object) {
 
 }
 
-void drawStairs(Shader shader, glm::mat4 model, Model object) {
+void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects) {
+	//objects[0] = carpet
+	//objects[1] = stairNose
+	//drawing the stairs
+	shader.use();
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.023f, 0.003f, 0.001f));
+	model = glm::translate(model, glm::vec3(69.0f, -36.0f, -7.0f));
+	shader.setMat4("model", model);
+	objects[0].Draw(shader);
+
+	model = glm::translate(model, glm::vec3(0, -94.0f, -121.0f));
+	shader.setMat4("model", model);
+	objects[0].Draw(shader);
 
 }
 
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
 	//draw handrail up top
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.0038f, 0.003f, 0.003f));
+	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.003f));
 	model = glm::translate(model, glm::vec3(406, 243.0f, -616.0f));
 	shader.setMat4("model", model);
 	objects[0].Draw(shader);
@@ -549,7 +566,7 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-		X = X + 0.01f;
+		X = X + 1.0f;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
