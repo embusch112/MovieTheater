@@ -518,16 +518,82 @@ void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects) {
 	shader.setMat4("model", model);
 	objects[0].Draw(shader);
 
+
 	model = glm::translate(model, glm::vec3(0, -94.0f, -121.0f));
 	shader.setMat4("model", model);
 	objects[0].Draw(shader);
 
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.023f, 0.003f, 0.001f));
+	model = glm::translate(model, glm::vec3(69.0f, -224.0f, -252.0f));
+	shader.setMat4("model", model);
+	objects[0].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.023f, 0.003f, 0.001f));
+	model = glm::translate(model, glm::vec3(69.0f, -317.0f, -370.0f));
+	shader.setMat4("model", model);
+	objects[0].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.023f, 0.003f, 0.001f));
+	model = glm::translate(model, glm::vec3(69.0f, -411.0f, -494.0f));
+	shader.setMat4("model", model);
+	objects[0].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.023f, 0.003f, 0.001f));
+	model = glm::translate(model, glm::vec3(69.0f, -504.5f, -616.0f));
+	shader.setMat4("model", model);
+	objects[0].Draw(shader);
+
+
+	//stair noses
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.035f, 0.001f, 0.001f));
+	model = glm::translate(model, glm::vec3(42, 116.0f, -110.0f));
+	shader.setMat4("model", model);
+	objects[1].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.035f, 0.001f, 0.001f));
+	model = glm::translate(model, glm::vec3(42, 239.0f, -389.0f));
+	shader.setMat4("model", model);
+	objects[1].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.035f, 0.001f, 0.001f));
+	model = glm::translate(model, glm::vec3(42, 367.0f, -669.0f));
+	shader.setMat4("model", model);
+	objects[1].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.035f, 0.001f, 0.001f));
+	model = glm::translate(model, glm::vec3(42, 484.0f, -948.0f));
+	shader.setMat4("model", model);
+	objects[1].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.035f, 0.001f, 0.001f));
+	model = glm::translate(model, glm::vec3(42, 606.0f, -1232.0f));
+	shader.setMat4("model", model);
+	objects[1].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.035f, 0.001f, 0.001f));
+	model = glm::translate(model, glm::vec3(42, 728.0f, -1511.0f));
+	shader.setMat4("model", model);
+	objects[1].Draw(shader);
 }
 
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
 	//draw handrail up top
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.003f));
+	model = glm::scale(model, glm::vec3(0.0036f, 0.003f, 0.003f));
 	model = glm::translate(model, glm::vec3(406, 243.0f, -616.0f));
 	shader.setMat4("model", model);
 	objects[0].Draw(shader);
