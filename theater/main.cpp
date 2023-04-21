@@ -91,6 +91,8 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object);
 void drawLights(Shader shader, glm::mat4 model, Model object);
 void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects);
+void drawWall(Shader shader, glm::mat4 model, Model object);
+void drawCeiling(Shader shader, glm::mat4 model, Model object);
 
 int main()
 {
@@ -154,6 +156,7 @@ int main()
 	Model light("models/light/light.obj");
 	//Model handRail("models/railing/handrail.obj");
 	//Model handRail_Mirror("models/railing/handrail_mirror.obj");
+	//Model wall("models/wall/wall.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -164,6 +167,26 @@ int main()
 	//vector of objects for our misc function
 	vector<Model> miscObjects = {railing};
 	vector<Model> stairObjects = { carpet,stairNose };
+
+
+
+	//TODO list:
+	/*
+		1. place all models
+			a. wall
+			b. ceiling
+			c. hand rail
+			d. exit door
+			e. light switch
+			f. misc (garbage, popcorn, soda cup, etc)
+			g. movie screen (Floating?)
+		2. Lights
+			Physically place more lights (Ceiling / wall)
+			Place point lights in those locations
+		2. Logic
+			a. light switch
+			b. movie screen
+	 */
 	while (!glfwWindowShouldClose(window))
 	{
 		// per-frame time logic
@@ -255,18 +278,14 @@ int main()
 
 
 
-		//lightingShader.use();
-		//// render the loaded model
-		//model = glm::mat4(1.0f);
-		//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));	// it's a bit too big for our scene, so scale it down
-		//lightingShader.setMat4("model", model);
-		//chair.Draw(lightingShader);
 
 		drawChairs(lightingShader, model, chair);
 		drawCarpet(lightingShader, model, carpet);
 		drawStairs(lightingShader, model, stairObjects);
 		drawMisc(lightingShader, model, miscObjects);
 		drawLights(lightingShader, model, light);
+		//drawWall(lightingShader, model, wall);
+		//drawCeiling(lightingShader, model, wall);
 
 		// also draw the lamp object
 		//lightCube.use();
@@ -611,6 +630,17 @@ void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
 	//model = glm::translate(model, glm::vec3(X, Y, Z));
 	//shader.setMat4("model", model);
 	//objects[2].Draw(shader);
+
+	//TODO get light switch model
+}
+
+//TODO get wall model
+void drawWall(Shader shader, glm::mat4 model, Model object) {
+	//TODO add walls
+}
+
+void drawCeiling(Shader shader, glm::mat4 model, Model object) {
+	//TODO add ceiling tiles
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
