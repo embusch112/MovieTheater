@@ -9,8 +9,21 @@
 #include <learnopengl/camera.h>
 #include <learnopengl/model.h>
 
+#include<opencv2/opencv.hpp>
+#include<opencv2/core.hpp>
+#include<opencv2/video.hpp>
+#include<opencv2/imgproc.hpp>
+#include<opencv2/videoio.hpp>
+#include<opencv2/highgui.hpp>
+#include<opencv2/core/core_c.h>
+#include<opencv2/videoio/videoio.hpp>
+#include<opencv2/highgui/highgui.hpp>
+#include<opencv2/imgproc/imgproc.hpp>
+#include<opencv2/highgui/highgui_c.h>
+
 #include <iostream>
 #include <vector>
+using namespace cv;
 
 float X = 0.0f;
 float Y = 0.0f;
@@ -93,9 +106,53 @@ void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawWall(Shader shader, glm::mat4 model, Model object);
 void drawCeiling(Shader shader, glm::mat4 model, Model object);
+int getFPS() {
+	vector<string> nums;
+	//get fps and save to file
+	system("ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate loaded.mp4 > fps.txt");
+
+	//read from file
+	std::ifstream myfile("fps.txt");
+	string rawFPS;
+
+	if (myfile.is_open()) { // always check whether the file is open
+		myfile >> rawFPS; // pipe file's content into stream
+	}
+
+	
+	string delimiter = "/";
+	string token;
+	size_t pos = 0;
+	while ((pos = rawFPS.find(delimiter)) != std::string::npos) {
+		token = rawFPS.substr(0, pos);
+		rawFPS.erase(0, pos + delimiter.length());
+		nums.push_back(token);
+	}
+	nums.push_back(rawFPS);
+
+	double x1 = stod(nums[0]);
+	double x2 = stod(nums[1]);
+	
+	
+	double fps = x1 / x2;
+	fps = round(fps);
+
+	return fps;
+}
+
 
 int main()
-{
+{	
+	////before
+	//system("ffmpeg -i loaded.mp4 %04d.png");
+
+	////after
+	//system("del *png");
+
+	////get fps
+	//system("ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate loaded.mp4 > fps.txt");
+	cout << getFPS() << "\n";
+
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
@@ -156,7 +213,8 @@ int main()
 	Model light("models/light/light.obj");
 	//Model handRail("models/railing/handrail.obj");
 	//Model handRail_Mirror("models/railing/handrail_mirror.obj");
-	//Model wall("models/wall/wall.obj");
+	Model wall("models/walls/walls.obj");
+	Model door("models/door/door.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -165,7 +223,7 @@ int main()
 	// -----------
 
 	//vector of objects for our misc function
-	vector<Model> miscObjects = {railing};
+	vector<Model> miscObjects = {railing,door};
 	vector<Model> stairObjects = { carpet,stairNose };
 
 
@@ -284,8 +342,8 @@ int main()
 		drawStairs(lightingShader, model, stairObjects);
 		drawMisc(lightingShader, model, miscObjects);
 		drawLights(lightingShader, model, light);
-		//drawWall(lightingShader, model, wall);
-		//drawCeiling(lightingShader, model, wall);
+		drawWall(lightingShader, model, wall);
+		drawCeiling(lightingShader, model, wall);
 
 		// also draw the lamp object
 		//lightCube.use();
@@ -403,20 +461,19 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 
 
 	//draws carpets along the length of the first row of chairs
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
 		shader.setMat4("model", model);
 		object.Draw(shader);
 	}
 
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0045f));	// it's a bit too big for our scene, so scale it down
+	model = glm::scale(model, glm::vec3(0.0033f, 0.003f, 0.0045f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 0.001, 181.0f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 
-	//draws carpets along the length of the first row of chairs
 	for (int i = 0; i < 6; i++) {
 		model = glm::translate(model, glm::vec3(159.813f, 0, 0));
 		shader.setMat4("model", model);
@@ -425,7 +482,7 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 
 	//2nd row
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::scale(model, glm::vec3(0.0033f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 40.68f, -187.0f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
@@ -437,7 +494,7 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 
 	//3rd row
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::scale(model, glm::vec3(0.0033f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 81.14f, -374.0f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
@@ -449,7 +506,7 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 
 	//4th row
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::scale(model, glm::vec3(0.0033f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 121.6f, -561.0f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
@@ -460,7 +517,7 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 	}
 	//5th row
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::scale(model, glm::vec3(0.0033f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 162.06f, -748.0f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
@@ -472,7 +529,7 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 
 	//6th row
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::scale(model, glm::vec3(0.0033f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 202.52f, -935.0f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
@@ -484,7 +541,7 @@ void drawCarpet(Shader shader, glm::mat4 model, Model object) {
 
 	//7th row
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
+	model = glm::scale(model, glm::vec3(0.0033f, 0.003f, 0.0015f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 242.98f, -1122.0f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
@@ -610,7 +667,7 @@ void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects) {
 }
 
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
-	//draw handrail up top
+	//draw guard up top
 	model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(0.0036f, 0.003f, 0.003f));
 	model = glm::translate(model, glm::vec3(406, 243.0f, -616.0f));
@@ -631,16 +688,118 @@ void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
 	//shader.setMat4("model", model);
 	//objects[2].Draw(shader);
 
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+	model = glm::translate(model, glm::vec3(15.2f, 7.4f, -25.5001f));
+	shader.setMat4("model", model);
+	objects[1].Draw(shader);
+
 	//TODO get light switch model
 }
 
-//TODO get wall model
 void drawWall(Shader shader, glm::mat4 model, Model object) {
-	//TODO add walls
+
+	//looking from the screen to the back of the theater (LEFT)
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, -0.01f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-1.87f, -0.01f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.9f, -0.01f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	//(BACK)
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-0.25f, -0.01f, -2.56f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(1.69f, -0.01f, -2.56f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	//(RIGHT)
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-2.56f, -0.01f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-0.62f, -0.01f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.32f, -0.01f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	//(BACK)
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-3.21f, -0.01f, -1.34f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-1.28f, -0.01f, -1.34f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
 }
 
 void drawCeiling(Shader shader, glm::mat4 model, Model object) {
-	//TODO add ceiling tiles
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-0.27f, -0.55f,-1.95f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.67f, -0.54f,-1.95f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-0.25f, -2.47f, -1.95f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-0.25f, -3.0f, -1.95f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.67f, -2.47f, -1.95f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.67f, -3.0f, -1.95f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -648,6 +807,8 @@ void drawCeiling(Shader shader, glm::mat4 model, Model object) {
 void printLoc() {
 	std::cout << X << " " << Y << " " << Z << "\n";
 }
+
+const float SPEEDY = 0.01;
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -662,27 +823,27 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-		X = X + 1.0f;
+		X = X + SPEEDY;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
-		X = X - 1.0f;
+		X = X - SPEEDY;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
-		Y = Y + 1.0f;
+		Y = Y + SPEEDY;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
-		Y = Y - 1.0f;
+		Y = Y - SPEEDY;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-		Z = Z + 1.0f;
+		Z = Z + SPEEDY;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
-		Z = Z - 1.0f;
+		Z = Z - SPEEDY;
 		printLoc();
 	}
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
