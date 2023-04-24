@@ -9,21 +9,9 @@
 #include <learnopengl/camera.h>
 #include <learnopengl/model.h>
 
-#include<opencv2/opencv.hpp>
-#include<opencv2/core.hpp>
-#include<opencv2/video.hpp>
-#include<opencv2/imgproc.hpp>
-#include<opencv2/videoio.hpp>
-#include<opencv2/highgui.hpp>
-#include<opencv2/core/core_c.h>
-#include<opencv2/videoio/videoio.hpp>
-#include<opencv2/highgui/highgui.hpp>
-#include<opencv2/imgproc/imgproc.hpp>
-#include<opencv2/highgui/highgui_c.h>
 
 #include <iostream>
 #include <vector>
-using namespace cv;
 
 float X = 0.0f;
 float Y = 0.0f;
@@ -106,39 +94,39 @@ void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawWall(Shader shader, glm::mat4 model, Model object);
 void drawCeiling(Shader shader, glm::mat4 model, Model object);
-int getFPS() {
-	vector<string> nums;
-	//get fps and save to file
-	system("ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate loaded.mp4 > fps.txt");
-
-	//read from file
-	std::ifstream myfile("fps.txt");
-	string rawFPS;
-
-	if (myfile.is_open()) { // always check whether the file is open
-		myfile >> rawFPS; // pipe file's content into stream
-	}
-
-	
-	string delimiter = "/";
-	string token;
-	size_t pos = 0;
-	while ((pos = rawFPS.find(delimiter)) != std::string::npos) {
-		token = rawFPS.substr(0, pos);
-		rawFPS.erase(0, pos + delimiter.length());
-		nums.push_back(token);
-	}
-	nums.push_back(rawFPS);
-
-	double x1 = stod(nums[0]);
-	double x2 = stod(nums[1]);
-	
-	
-	double fps = x1 / x2;
-	fps = round(fps);
-
-	return fps;
-}
+//int getFPS() {
+//	vector<string> nums;
+//	//get fps and save to file
+//	system("ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate loaded.mp4 > fps.txt");
+//
+//	//read from file
+//	std::ifstream myfile("fps.txt");
+//	string rawFPS;
+//
+//	if (myfile.is_open()) { // always check whether the file is open
+//		myfile >> rawFPS; // pipe file's content into stream
+//	}
+//
+//	
+//	string delimiter = "/";
+//	string token;
+//	size_t pos = 0;
+//	while ((pos = rawFPS.find(delimiter)) != std::string::npos) {
+//		token = rawFPS.substr(0, pos);
+//		rawFPS.erase(0, pos + delimiter.length());
+//		nums.push_back(token);
+//	}
+//	nums.push_back(rawFPS);
+//
+//	double x1 = stod(nums[0]);
+//	double x2 = stod(nums[1]);
+//	
+//	
+//	double fps = x1 / x2;
+//	fps = round(fps);
+//
+//	return fps;
+//}
 
 
 int main()
@@ -151,7 +139,7 @@ int main()
 
 	////get fps
 	//system("ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate loaded.mp4 > fps.txt");
-	cout << getFPS() << "\n";
+	//cout << getFPS() << "\n";
 
 	// glfw: initialize and configure
 	// ------------------------------
@@ -215,6 +203,8 @@ int main()
 	//Model handRail_Mirror("models/railing/handrail_mirror.obj");
 	Model wall("models/walls/walls.obj");
 	Model door("models/door/door.obj");
+	Model soda("models/soda/soda.obj");
+	Model popcorn("models/popcorn/popcorn.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -223,7 +213,7 @@ int main()
 	// -----------
 
 	//vector of objects for our misc function
-	vector<Model> miscObjects = {railing,door};
+	vector<Model> miscObjects = {railing,door,soda,popcorn};
 	vector<Model> stairObjects = { carpet,stairNose };
 
 
@@ -688,11 +678,51 @@ void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
 	//shader.setMat4("model", model);
 	//objects[2].Draw(shader);
 
+	//door
 	model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 	model = glm::translate(model, glm::vec3(15.2f, 7.4f, -25.5001f));
 	shader.setMat4("model", model);
 	objects[1].Draw(shader);
+
+	//sodas
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+	model = glm::translate(model, glm::vec3(5.60f,7.99f,0.0f));
+	shader.setMat4("model", model);
+	objects[2].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+	model = glm::translate(model, glm::vec3(31.50f,7.99f,0.0f));
+	shader.setMat4("model", model);
+	objects[2].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+	model = glm::translate(model, glm::vec3(31.5f,16.2f,-19.30f));
+	shader.setMat4("model", model);
+	objects[2].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+	model = glm::translate(model, glm::vec3(68.69f,20.2f,-26.90f));
+	shader.setMat4("model", model);
+	objects[2].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+	model = glm::translate(model, glm::vec3(88.39,13.50f,-24.80f));
+	shader.setMat4("model", model);
+	objects[2].Draw(shader);
+
+	//popcorn
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+	model = glm::translate(model, glm::vec3(X,Y,Z));
+	shader.setMat4("model", model);
+	objects[3].Draw(shader);
+
 
 	//TODO get light switch model
 }
@@ -767,7 +797,7 @@ void drawWall(Shader shader, glm::mat4 model, Model object) {
 void drawCeiling(Shader shader, glm::mat4 model, Model object) {
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(-0.27f, -0.55f,-1.95f));
+	model = glm::translate(model, glm::vec3(-0.27f, -0.54f,-1.95f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
@@ -808,7 +838,7 @@ void printLoc() {
 	std::cout << X << " " << Y << " " << Z << "\n";
 }
 
-const float SPEEDY = 0.01;
+const float SPEEDY = 0.1f;
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
