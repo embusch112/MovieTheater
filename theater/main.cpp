@@ -84,8 +84,10 @@ float vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
 
-
-glm::vec3 pointLightPositions[] = { glm::vec3(0.3f,1.42f,0) };
+float lightController = X;
+glm::vec3 lightInten = glm::vec3(0.95f, 0.95f, 0.95f);
+glm::vec3 lightOff = glm::vec3(0.1f, 0.1f, 0.1f);
+glm::vec3 pointLightPositions[] = { glm::vec3(0.0f, 14.00f, 0.0f),glm::vec3(3.0f, 14.00f, 0.0f),glm::vec3(6.0f, 14.00f, 0.0f),glm::vec3(9.0f, 14.00f, 0.0f) };
 
 void drawChairs(Shader shader, glm::mat4 model, Model object);
 void drawCarpet(Shader shader, glm::mat4 model, Model object);
@@ -268,23 +270,52 @@ int main()
 		//lightingShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 		//lightingShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-		if (render[0]) lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-		else lightingShader.setVec3("pointLights[0].position", 100.0f, 100.0f, 100.0f);
-		lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+		if(render[0])lightingShader.setVec3("pointLights[0].ambient", lightInten);
+		else {
+			lightingShader.setVec3("pointLights[0].ambient", lightOff);
+		}
 		lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
 		lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setFloat("pointLights[0].constant", 1.0f);
 		lightingShader.setFloat("pointLights[0].linear", 0.09f);
 		lightingShader.setFloat("pointLights[0].quadratic", 0.032f);
 
-
-		lightingShader.setVec3("pointLights[1].position", pointLightPositions[0]);
-		lightingShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-		lightingShader.setVec3("pointLights[1].diffuse", 0.1f, 0.1f, 0.1f);
-		lightingShader.setVec3("pointLights[1].specular", 0.1f, 0.1f, 0.1f);
+		lightingShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+		if (render[0])lightingShader.setVec3("pointLights[1].ambient", lightInten);
+		else {
+			lightingShader.setVec3("pointLights[1].ambient", lightOff);
+		}
+		lightingShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setFloat("pointLights[1].constant", 1.0f);
 		lightingShader.setFloat("pointLights[1].linear", 0.09f);
 		lightingShader.setFloat("pointLights[1].quadratic", 0.032f);
+
+		lightingShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+		if (render[0])lightingShader.setVec3("pointLights[2].ambient", lightInten);
+		else {
+			lightingShader.setVec3("pointLights[2].ambient", lightOff);
+		}
+		lightingShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+		lightingShader.setFloat("pointLights[2].constant", 1.0f);
+		lightingShader.setFloat("pointLights[2].linear", 0.09f);
+		lightingShader.setFloat("pointLights[2].quadratic", 0.032f);
+
+		lightingShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+		if (render[0])lightingShader.setVec3("pointLights[3].ambient", lightInten);
+		else {
+			lightingShader.setVec3("pointLights[3].ambient", lightOff);
+		}
+		lightingShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+		lightingShader.setFloat("pointLights[3].constant", 1.0f);
+		lightingShader.setFloat("pointLights[3].linear", 0.09f);
+		lightingShader.setFloat("pointLights[3].quadratic", 0.032f);
+
+
+
 
 
 		if (render[1]) {
@@ -718,8 +749,38 @@ void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects) {
 
 	//popcorn
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-	model = glm::translate(model, glm::vec3(X,Y,Z));
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(0.34f,0.19f,0.0f));
+	shader.setMat4("model", model);
+	objects[3].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(2.09f,0.78f,0.0f));
+	shader.setMat4("model", model);
+	objects[3].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(8.49f,0.2f,-1.59f));
+	shader.setMat4("model", model);
+	objects[3].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(8.31f,1.49f,-1.59f));
+	shader.setMat4("model", model);
+	objects[3].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(4.41f, 0.88f, -1.59f));
+	shader.setMat4("model", model);
+	objects[3].Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.35f));
+	model = glm::translate(model, glm::vec3(2.1f,1.49f,-1.44f));
 	shader.setMat4("model", model);
 	objects[3].Draw(shader);
 
@@ -738,13 +799,49 @@ void drawWall(Shader shader, glm::mat4 model, Model object) {
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 1.93f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 3.84f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(-1.87f, -0.01f, -0.25f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-1.87f, 1.93f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-1.87f, 3.84f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(1.9f, -0.01f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.9f, 1.93f, -0.25f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.9f, 3.84f, -0.25f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
@@ -755,7 +852,27 @@ void drawWall(Shader shader, glm::mat4 model, Model object) {
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-0.25f, 1.93f, -2.56f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-0.25f, 3.84f, -2.56f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(1.69f, -0.01f, -2.56f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(1.69f, 1.93f, -2.56f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(1.69f, 3.84f, -2.56f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
@@ -769,13 +886,49 @@ void drawWall(Shader shader, glm::mat4 model, Model object) {
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-2.56f, 1.93f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-2.56f, 3.84f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(-0.62f, -0.01f, -3.22f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-0.62f, 1.93f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-0.62f, 3.84f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(1.32f, -0.01f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.32f, 1.93f, -3.22f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(1.32f, 3.84f, -3.22f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
@@ -788,7 +941,31 @@ void drawWall(Shader shader, glm::mat4 model, Model object) {
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-3.21f, 1.93f, -1.34f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-3.21f, 3.84f, -1.34f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(-1.28f, -0.01f, -1.34f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-1.28f, 1.93f, -1.34f));
+	shader.setMat4("model", model);
+	object.Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(-1.28f, 3.84f, -1.34f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
@@ -797,37 +974,37 @@ void drawWall(Shader shader, glm::mat4 model, Model object) {
 void drawCeiling(Shader shader, glm::mat4 model, Model object) {
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(-0.27f, -0.54f,-1.95f));
+	model = glm::translate(model, glm::vec3(-0.27f, -0.54f,-4.53f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(1.67f, -0.54f,-1.95f));
+	model = glm::translate(model, glm::vec3(1.67f, -0.54f, -4.53f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(-0.25f, -2.47f, -1.95f));
+	model = glm::translate(model, glm::vec3(-0.25f, -2.47f, -4.53f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(-0.25f, -3.0f, -1.95f));
+	model = glm::translate(model, glm::vec3(-0.25f, -3.0f, -4.53f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(1.67f, -2.47f, -1.95f));
+	model = glm::translate(model, glm::vec3(1.67f, -2.47f, -4.53f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 
 	model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(90.0F), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(1.67f, -3.0f, -1.95f));
+	model = glm::translate(model, glm::vec3(1.67f, -3.0f, -4.53f));
 	shader.setMat4("model", model);
 	object.Draw(shader);
 }
@@ -838,7 +1015,7 @@ void printLoc() {
 	std::cout << X << " " << Y << " " << Z << "\n";
 }
 
-const float SPEEDY = 0.1f;
+const float SPEEDY = 0.01f;
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -887,6 +1064,10 @@ void processInput(GLFWwindow *window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
 		render[1] = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+		lightController += 0.1f;
+		cout << lightController << "\n";
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		std::cout << camera.Position.x << "\n";
