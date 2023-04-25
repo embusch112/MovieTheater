@@ -1,6 +1,7 @@
 ﻿#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -9,14 +10,17 @@
 #include <learnopengl/camera.h>
 #include <learnopengl/model.h>
 
+#include<SOUND/irrKlang.h>
 
 #include <iostream>
 #include <vector>
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+irrklang::ISoundEngine *SoundEngine = irrklang::createIrrKlangDevice();
 
 float X = 0.0f;
 float Y = 0.0f;
 float Z = 0.0f;
-
+int frameAmt = 0;
 bool render[] = { true,false,false };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -38,50 +42,49 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-
+//screen position and texture coords
 float vertices[] = {
-	// positions          // normals           // texture coords
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
 float lightController = X;
@@ -96,52 +99,96 @@ void drawStairs(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawMisc(Shader shader, glm::mat4 model, vector<Model> objects);
 void drawWall(Shader shader, glm::mat4 model, Model object);
 void drawCeiling(Shader shader, glm::mat4 model, Model object);
-//int getFPS() {
-//	vector<string> nums;
-//	//get fps and save to file
-//	system("ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate loaded.mp4 > fps.txt");
-//
-//	//read from file
-//	std::ifstream myfile("fps.txt");
-//	string rawFPS;
-//
-//	if (myfile.is_open()) { // always check whether the file is open
-//		myfile >> rawFPS; // pipe file's content into stream
-//	}
-//
-//	
-//	string delimiter = "/";
-//	string token;
-//	size_t pos = 0;
-//	while ((pos = rawFPS.find(delimiter)) != std::string::npos) {
-//		token = rawFPS.substr(0, pos);
-//		rawFPS.erase(0, pos + delimiter.length());
-//		nums.push_back(token);
-//	}
-//	nums.push_back(rawFPS);
-//
-//	double x1 = stod(nums[0]);
-//	double x2 = stod(nums[1]);
-//	
-//	
-//	double fps = x1 / x2;
-//	fps = round(fps);
-//
-//	return fps;
-//}
+int getFPS(string name) {
+	vector<string> nums;
 
+
+	string tempCommand = "ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate " + name + " > fps.txt";
+	const char* command = tempCommand.c_str();
+	//get fps and save to file
+	system(command);
+
+
+
+	//get fps and save to file
+
+	//read from file
+	std::ifstream myfile("fps.txt");
+	string rawFPS;
+
+	if (myfile.is_open()) { // always check whether the file is open
+		myfile >> rawFPS; // pipe file's content into stream
+	}
+
+	
+	string delimiter = "/";
+	string token;
+	size_t pos = 0;
+	while ((pos = rawFPS.find(delimiter)) != std::string::npos) {
+		token = rawFPS.substr(0, pos);
+		rawFPS.erase(0, pos + delimiter.length());
+		nums.push_back(token);
+	}
+	nums.push_back(rawFPS);
+
+	double x1 = stod(nums[0]);
+	double x2 = stod(nums[1]);
+	
+	
+	double fps = x1 / x2;
+	fps = round(fps);
+
+	return fps;
+}
+
+void getFrames(string name) {
+	//extracts frames
+	string tempCommand = "ffmpeg -i " + name + " -vf scale=720:-1  %1d.jpg";
+	const char* command = tempCommand.c_str();
+	system(command);
+
+	//extract audio
+	 tempCommand = "ffmpeg -i " + name + " -q:a 0 -map a audio.mp3";
+	command = tempCommand.c_str();
+	system(command);
+}
+
+void delFrames() {
+	system("del *jpg");
+	
+}
+void delAudio() {
+system("del *mp3");
+}
+
+double getLength(string name) {
+	string tempCommand = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " + name + " > length.txt";
+	const char* command = tempCommand.c_str();
+	system(command);
+
+	//read from file
+	std::ifstream myfile("length.txt");
+	string temp;
+
+	if (myfile.is_open()) { // always check whether the file is open
+		myfile >> temp; // pipe file's content into stream
+	}
+	double length = stod(temp);
+	return length;
+}
 
 int main()
 {	
-	////before
-	//system("ffmpeg -i loaded.mp4 %04d.png");
-
-	////after
-	//system("del *png");
-
-	////get fps
-	//system("ffprobe -v error -select_streams v -of default=noprint_wrappers=1:nokey=1 -show_entries stream=r_frame_rate loaded.mp4 > fps.txt");
-	//cout << getFPS() << "\n";
+	//clear irrklang startup text
+	system("clear");
+	//get video
+	string name = "";
+	cout << "What video do you want to watch?";
+	cin >> name;
+	getFrames(name);
+	int FPS = getFPS(name);
+	double length = getLength(name);
+	frameAmt = FPS * length;
 
 	// glfw: initialize and configure
 	// ------------------------------
@@ -189,7 +236,7 @@ int main()
 	// build and compile shaders
 	// -------------------------
 	Shader lightingShader("shaders/5.4.light_casters.vs", "shaders/5.4.light_casters.fs");
-
+	Shader screenShader("shaders/screen.vs", "shaders/screen.fs");
 
 
 
@@ -219,32 +266,45 @@ int main()
 	vector<Model> stairObjects = { carpet,stairNose };
 
 
+	//screen VBO/VAO
+	unsigned int VBO, VAO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
 
-	//TODO list:
-	/*
-		1. place all models
-			a. wall
-			b. ceiling
-			c. hand rail
-			d. exit door
-			e. light switch
-			f. misc (garbage, popcorn, soda cup, etc)
-			g. movie screen (Floating?)
-		2. Lights
-			Physically place more lights (Ceiling / wall)
-			Place point lights in those locations
-		2. Logic
-			a. light switch
-			b. movie screen
-	 */
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// texture coord attribute
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	
+
+	screenShader.use();
+	screenShader.setInt("texture1", 0);
+	int minFrameTime = 1 / getFPS(name);
+	int count = 1;
+	double lastTime = glfwGetTime();
+
+	//start audio right before render
+	SoundEngine->play2D("audio.mp3", true);
+
 	while (!glfwWindowShouldClose(window))
 	{
+		if (count > frameAmt) {
+			count = 1;
+		}
+
 		// per-frame time logic
 		// --------------------
 		float currentFrame = static_cast<float>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
 		// input
 		// -----
 		processInput(window);
@@ -275,7 +335,7 @@ int main()
 		else {
 			lightingShader.setVec3("pointLights[0].ambient", lightOff);
 		}
-		lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setVec3("pointLights[0].diffuse", 1.0f, 0.8f, 0.8f);
 		lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setFloat("pointLights[0].constant", 1.0f);
 		lightingShader.setFloat("pointLights[0].linear", 0.09f);
@@ -366,27 +426,61 @@ int main()
 		drawWall(lightingShader, model, wall);
 		drawCeiling(lightingShader, model, wall);
 
-		// also draw the lamp object
-		//lightCube.use();
-		//lightCube.setMat4("projection", projection);
-		//lightCube.setMat4("view", view);
-		//model = glm::mat4(1.0f);
-		//model = glm::translate(model, pointLightPositions[0]);
-		////model = glm::translate(model, glm::vec3(X,Y,Z));
-		//model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-		//lightCube.setMat4("model", model);
-
-		//glBindVertexArray(lightCubeVAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
-		//model = glm::mat4(1.0f);
-		//model = glm::translate(model, glm::vec3(1.0f, 1.0f, 1.0f)); // translate it down so it's at the center of the scene
-		//glBindVertexArray(cubeVAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-		// -------------------------------------------------------------------------------
+		string tempFrame = to_string(count);
+		tempFrame = tempFrame + ".jpg";
+		const char* frame = tempFrame.c_str();
+
+		unsigned int texture1;
+		glGenTextures(1, &texture1);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		// set the texture wrapping parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		// set texture filtering parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// load image, create texture and generate mipmaps
+		int width, height, nrChannels;
+		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+		unsigned char *data = stbi_load(frame, &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::cout << "Failed to load texture" << " " << count << std::endl;
+		}
+		stbi_image_free(data);
+
+
+
+
+
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		screenShader.use();
+		model = glm::scale(model, glm::vec3(2.0f,1.0f,1.0f));
+		model = glm::translate(model, glm::vec3(0.74f, 1.57f, 1.82f));
+		screenShader.setMat4("model", model);
+		screenShader.setMat4("projection", projection);
+		screenShader.setMat4("view", view);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		count++;
+
+		while (glfwGetTime() < lastTime + 1.0 / FPS) {
+			//do nothing
+		}
+		lastTime += 1.0 / FPS;
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -394,6 +488,8 @@ int main()
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
 	glfwTerminate();
+	delFrames();
+	delAudio();
 	return 0;
 }
 
@@ -1044,6 +1140,8 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
 		Y = Y - SPEEDY;
 		printLoc();
+
+
 	}
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
 		Z = Z + SPEEDY;
@@ -1070,9 +1168,11 @@ void processInput(GLFWwindow *window)
 		cout << lightController << "\n";
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		std::cout << camera.Position.x << "\n";
-		std::cout << camera.Position.y << "\n";
-		std::cout << camera.Position.z << "\n";
+		camera.Position.x = 1.53f;
+		camera.Position.y = 1.40f;
+		camera.Position.z = -0.88f;
+		camera.Pitch = 1.5f;
+		camera.Yaw = 90.0f;
 		std::cout << "\n";
 	}
 }
